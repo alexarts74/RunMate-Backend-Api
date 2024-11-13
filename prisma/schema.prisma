@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,21 +12,28 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
   name      String
   lastName  String
   age       Int
   gender    String
   location  String
-  email     String   @unique
-  password  String
-  objectives Objective[]
+  runningPreferences RunningPreferences?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Objective {
-  id          Int    @id @default(autoincrement())
-  type        String
-  distance    Float
-  targetTime  Float
-  userId      Int
-  user        User   @relation(fields: [userId], references: [id])
+model RunningPreferences {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @unique
+  user           User     @relation(fields: [userId], references: [id])
+  pace           String
+  distance       Int
+  availability   String[] // PostgreSQL supporte les tableaux !
+  level          String
+  preferredGender String?
+  ageRange       Json     // PostgreSQL supporte le JSON !
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
